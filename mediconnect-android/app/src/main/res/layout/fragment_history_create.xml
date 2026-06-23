@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="AGREGAR REGISTRO HISTORIAL"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="20dp" />
+
+    <EditText
+        android:id="@+id/etHistPacienteId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ID del Paciente (Numérico)"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/etHistDiagnosis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Diagnóstico"
+        android:inputType="textLongMessage" />
+
+    <EditText
+        android:id="@+id/etHistDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descripción de síntomas / observaciones"
+        android:inputType="textLongMessage" />
+
+    <EditText
+        android:id="@+id/etHistTreatment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tratamiento prescrito (Opcional)"
+        android:inputType="textLongMessage" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnSubmitHist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Guardar Historial"
+        android:layout_marginTop="20dp" />
+
+</LinearLayout>

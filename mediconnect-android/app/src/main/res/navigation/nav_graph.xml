@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <!-- Auth Screens -->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.mediconnect.app.ui.auth.LoginFragment"
+        android:label="Iniciar Sesión"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.mediconnect.app.ui.auth.RegisterFragment"
+        android:label="Registro de Paciente"
+        tools:layout="@layout/fragment_register">
+        <action
+            android:id="@+id/action_registerFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- Dashboard Screen -->
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.mediconnect.app.ui.dashboard.DashboardFragment"
+        android:label="Panel de Control"
+        tools:layout="@layout/fragment_dashboard">
+        <action
+            android:id="@+id/action_dashboardFragment_to_doctorsFragment"
+            app:destination="@id/doctorsFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_appointmentsFragment"
+            app:destination="@id/appointmentsFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_prescriptionsFragment"
+            app:destination="@id/prescriptionsFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_notificationsFragment"
+            app:destination="@id/notificationsFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- Doctors Screens -->
+    <fragment
+        android:id="@+id/doctorsFragment"
+        android:name="com.mediconnect.app.ui.doctors.DoctorsFragment"
+        android:label="Doctores"
+        tools:layout="@layout/fragment_doctors">
+        <action
+            android:id="@+id/action_doctorsFragment_to_doctorDetailFragment"
+            app:destination="@id/doctorDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/doctorDetailFragment"
+        android:name="com.mediconnect.app.ui.doctors.DoctorDetailFragment"
+        android:label="Detalle del Doctor"
+        tools:layout="@layout/fragment_doctor_detail">
+        <argument
+            android:name="doctorId"
+            app:argType="long" />
+        <argument
+            android:name="doctorNombre"
+            app:argType="string" />
+        <argument
+            android:name="doctorEspecialidad"
+            app:argType="string" />
+    </fragment>
+
+    <!-- Appointments Screens -->
+    <fragment
+        android:id="@+id/appointmentsFragment"
+        android:name="com.mediconnect.app.ui.appointments.AppointmentsFragment"
+        android:label="Mis Citas"
+        tools:layout="@layout/fragment_appointments">
+        <action
+            android:id="@+id/action_appointmentsFragment_to_appointmentCreateFragment"
+            app:destination="@id/appointmentCreateFragment" />
+        <action
+            android:id="@+id/action_appointmentsFragment_to_appointmentCheckInFragment"
+            app:destination="@id/appointmentCheckInFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/appointmentCreateFragment"
+        android:name="com.mediconnect.app.ui.appointments.AppointmentCreateFragment"
+        android:label="Agendar Cita"
+        tools:layout="@layout/fragment_appointment_create" />
+
+    <fragment
+        android:id="@+id/appointmentCheckInFragment"
+        android:name="com.mediconnect.app.ui.appointments.AppointmentCheckInFragment"
+        android:label="Check-In Cita"
+        tools:layout="@layout/fragment_appointment_check_in">
+        <argument
+            android:name="citaId"
+            app:argType="long" />
+        <argument
+            android:name="codigoCheckIn"
+            app:argType="string" />
+    </fragment>
+
+    <!-- Prescriptions Screens -->
+    <fragment
+        android:id="@+id/prescriptionsFragment"
+        android:name="com.mediconnect.app.ui.prescriptions.PrescriptionsFragment"
+        android:label="Recetas"
+        tools:layout="@layout/fragment_prescriptions">
+        <action
+            android:id="@+id/action_prescriptionsFragment_to_prescriptionDetailFragment"
+            app:destination="@id/prescriptionDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/prescriptionDetailFragment"
+        android:name="com.mediconnect.app.ui.prescriptions.PrescriptionDetailFragment"
+        android:label="Detalle de Receta"
+        tools:layout="@layout/fragment_prescription_detail">
+        <argument
+            android:name="recetaId"
+            app:argType="long" />
+    </fragment>
+
+    <!-- Medical History Screens -->
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.mediconnect.app.ui.history.HistoryFragment"
+        android:label="Historial Médico"
+        tools:layout="@layout/fragment_history">
+        <action
+            android:id="@+id/action_historyFragment_to_historyCreateFragment"
+            app:destination="@id/historyCreateFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/historyCreateFragment"
+        android:name="com.mediconnect.app.ui.history.HistoryCreateFragment"
+        android:label="Agregar Historial"
+        tools:layout="@layout/fragment_history_create" />
+
+    <!-- Notifications Screen -->
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.mediconnect.app.ui.notifications.NotificationsFragment"
+        android:label="Notificaciones"
+        tools:layout="@layout/fragment_notifications" />
+
+    <!-- Profile Screen -->
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.mediconnect.app.ui.profile.ProfileFragment"
+        android:label="Mi Perfil"
+        tools:layout="@layout/fragment_profile" />
+
+</navigation>
