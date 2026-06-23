@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
         - name: mediconnect-api
-          image: mediconnect-api:latest
-          imagePullPolicy: Never
+          image: m4fb/mediconnect-api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           envFrom:
