@@ -1,0 +1,18 @@
+# Maven
+maven/
+mediconnect-api/target/
+mediconnect-api/.mvn/wrapper/maven-wrapper.jar
+
+# IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+Thumbs.db

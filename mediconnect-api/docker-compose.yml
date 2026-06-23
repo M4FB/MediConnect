@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mediconnect-postgres
+    environment:
+      POSTGRES_DB: mediconnect
+      POSTGRES_USER: mediconnect
+      POSTGRES_PASSWORD: mediconnect123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mediconnect -d mediconnect"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: mediconnect-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:postgresql://postgres:5432/mediconnect
+      DB_USERNAME: mediconnect
+      DB_PASSWORD: mediconnect123
+      JWT_SECRET: super-secret-jwt-key-for-mediconnect-app-min-256-bits
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
