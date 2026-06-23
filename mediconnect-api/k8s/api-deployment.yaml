@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mediconnect-api
-  namespace: 2023800251
+  namespace: "2023800251"
   labels:
     app: mediconnect-api
 spec:
@@ -24,8 +24,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: api-configmap
-            - secretRef:
-                name: api-secret
           resources:
             requests:
               memory: "256Mi"
