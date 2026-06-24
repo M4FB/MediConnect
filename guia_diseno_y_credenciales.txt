@@ -1,0 +1,100 @@
+========================================================================
+             GUÍA DE PERSONALIZACIÓN DE DISEÑO Y CREDENCIALES
+                          Proyecto MediConnect
+========================================================================
+
+Si deseas cambiar el diseño visual de la aplicación móvil (colores, fuentes,
+márgenes, formas, bordes) y NO quieres tocar nada de código Kotlin/Java,
+estos son los archivos de recursos XML que debes modificar en Android Studio:
+
+------------------------------------------------------------------------
+1. COLORES, TEMAS Y ESTILOS GLOBALES
+------------------------------------------------------------------------
+*   Ruta: mediconnect-android/app/src/main/res/values/
+    
+    *   colors.xml : Aquí defines la paleta de colores de tu aplicación. 
+        Puedes cambiar los valores hexadecimales de los colores primarios, 
+        secundarios, fondos y textos.
+        
+    *   themes.xml : Define el estilo global de la app (por ejemplo, si los
+        botones tienen bordes redondeados, el color de la barra de estado,
+        las tipografías por defecto y los temas de las ventanas de diálogo).
+        
+    *   strings.xml : Contiene todas las etiquetas de texto visibles en la app.
+        Si quieres cambiar los mensajes, títulos de botones o enunciados,
+        modifica los valores de este archivo.
+
+------------------------------------------------------------------------
+2. ARCHIVOS DE DISEÑO DE PANTALLA (LAYOUTS)
+------------------------------------------------------------------------
+*   Ruta: mediconnect-android/app/src/main/res/layout/
+    
+    Cada archivo representa la interfaz de una pantalla o elemento de lista. 
+    Actualmente usan 'LinearLayout' simples para su fácil comprensión. Puedes
+    agregar márgenes, rellenos (padding), colores de fondo, o cambiar estos
+    layouts a 'ConstraintLayout' para diseños más avanzados:
+
+    *   activity_main.xml : Contenedor principal de la aplicación.
+    *   fragment_login.xml : Interfaz de Inicio de Sesión (Login).
+    *   fragment_register.xml : Pantalla de Registro de Pacientes.
+    *   fragment_dashboard.xml : Dashboard principal de navegación.
+    
+    *   fragment_doctors.xml : Listado de búsqueda de doctores.
+    *   item_doctor.xml : Diseño de la fila de cada doctor en la lista.
+    *   fragment_doctor_detail.xml : Detalle del perfil del doctor y horarios.
+    *   item_review.xml : Diseño de cada valoración/reseña de doctor.
+    
+    *   fragment_appointments.xml : Listado de citas médicas del usuario.
+    *   item_appointment.xml : Diseño de la tarjeta de cada cita.
+    *   fragment_appointment_create.xml : Formulario de agendamiento de cita.
+    *   fragment_appointment_check_in.xml : Pantalla del código QR de check-in.
+    
+    *   fragment_prescriptions.xml : Listado de recetas médicas del paciente.
+    *   item_prescription.xml : Diseño de fila de cada receta.
+    *   fragment_prescription_detail.xml : Detalle de la receta y diagnósticos.
+    *   item_medicine_detail.xml : Lista de medicamentos con su posología.
+    
+    *   fragment_history.xml : Listado del historial clínico del paciente.
+    *   item_history.xml : Fila de cada entrada en el historial clínico.
+    *   fragment_history_create.xml : Formulario para agregar registros médicos.
+    
+    *   fragment_notifications.xml : Listado de notificaciones.
+    *   item_notification.xml : Fila de cada notificación (leída/no leída).
+    
+    *   fragment_profile.xml : Perfil del usuario (visualización y edición).
+    *   dialog_register_doctor.xml : Formulario popup para registrar doctores (Admin).
+
+------------------------------------------------------------------------
+3. NAVEGACIÓN ENTRE PANTALLAS
+------------------------------------------------------------------------
+*   Ruta: mediconnect-android/app/src/main/res/navigation/
+    
+    *   nav_graph.xml : Define visualmente el flujo y las transiciones
+        entre fragmentos (pantallas). Aquí puedes agregar animaciones de
+        transición (slide in/out, fade, etc.) al cambiar de pantalla.
+
+========================================================================
+                     CREDENCIALES DE PRUEBA (DATA)
+========================================================================
+
+Las siguientes cuentas han sido precargadas automáticamente en el
+servidor de base de datos remoto de Kubernetes para tus pruebas:
+
+1. ADMINISTRADOR (ADMIN)
+   *   Email: admin@mediconnect.com
+   *   Contraseña: admin123
+
+2. DOCTORES (DOCTOR)
+   *   Dr. Carlos Martínez (Cardiólogo) -> dr.martinez@mediconnect.com
+   *   Dra. Ana García (Dermatóloga)    -> dra.garcia@mediconnect.com
+   *   Dr. Miguel Rodríguez (Pediatra)  -> dr.rodriguez@mediconnect.com
+   *   Contraseña general: password123
+
+3. PACIENTES (PACIENTE)
+   *   Paciente 1 -> paciente1@email.com
+   *   Paciente 2 -> paciente2@email.com
+   *   Paciente 3 -> paciente3@email.com
+   *   Paciente 4 -> paciente4@email.com
+   *   Paciente 5 -> paciente5@email.com
+   *   Contraseña general: password123
+========================================================================
