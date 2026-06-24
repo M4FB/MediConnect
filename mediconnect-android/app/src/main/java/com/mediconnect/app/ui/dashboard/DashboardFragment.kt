@@ -72,7 +72,7 @@ class DashboardFragment : Fragment() {
             viewModel.userProfile.collectLatest { profile ->
                 if (profile != null) {
                     binding.tvWelcome.text = "¡Hola, ${profile.nombre} ${profile.apellido}!"
-                    binding.tvStatus.text = "Rol: ${profile.rol} | Email: ${profile.email}"
+                    binding.tvStatus.text = "Rol: ${profile.role} | Email: ${profile.email}"
                 }
             }
         }

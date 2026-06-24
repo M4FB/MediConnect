@@ -36,7 +36,7 @@ class HistoryCreateFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.patientId.collectLatest { id ->
                 if (id != null) {
-                    binding.etHistPacienteId.setText(id.toString())
+                    binding.etHistPacienteId.setText(id)
                 }
             }
         }
@@ -47,14 +47,12 @@ class HistoryCreateFragment : Fragment() {
             val description = binding.etHistDescription.text.toString().trim()
             val treatment = binding.etHistTreatment.text.toString().trim().ifEmpty { null }
 
-            val pacienteId = pacienteIdStr.toLongOrNull()
-
-            if (pacienteId == null || diagnosis.isEmpty() || description.isEmpty()) {
+            if (pacienteIdStr.isEmpty() || diagnosis.isEmpty() || description.isEmpty()) {
                 Toast.makeText(context, "Los campos ID de Paciente, Diagnóstico y Descripción son requeridos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            viewModel.crearHistorial(pacienteId, description, diagnosis, treatment)
+            viewModel.crearHistorial(description, diagnosis, treatment)
         }
 
         lifecycleScope.launch {

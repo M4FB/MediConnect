@@ -70,7 +70,7 @@ class DoctorsFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = DoctorsAdapter { doctor ->
             val bundle = Bundle().apply {
-                putLong("doctorId", doctor.id)
+                putString("doctorId", doctor.id)
                 putString("doctorNombre", "${doctor.nombre} ${doctor.apellido}")
                 putString("doctorEspecialidad", doctor.especialidad)
             }
@@ -102,7 +102,20 @@ class DoctorsFragment : Fragment() {
                 if (nombre.isEmpty() || apellido.isEmpty() || email.isEmpty() || especialidad.isEmpty()) {
                     Toast.makeText(context, "Los campos Nombre, Apellido, Correo y Especialidad son requeridos", Toast.LENGTH_SHORT).show()
                 } else {
-                    viewModel.registerDoctor(nombre, apellido, email, especialidad, consultorio, telefono)
+                    viewModel.registerDoctor(
+                        email = email,
+                        password = "Password123!",
+                        nombre = nombre,
+                        apellido = apellido,
+                        telefono = telefono,
+                        especialidad = especialidad,
+                        numeroColegiado = "COL-12345",
+                        descripcion = consultorio ?: "Consultorio general",
+                        costoCita = 50.0,
+                        horarioInicio = "08:00:00",
+                        horarioFin = "17:00:00",
+                        diasAtencion = "Lunes a Viernes"
+                    )
                 }
                 dialog.dismiss()
             }

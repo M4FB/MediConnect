@@ -30,8 +30,8 @@ class PrescriptionsAdapter(
 
     inner class PrescriptionViewHolder(private val binding: ItemPrescriptionBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(receta: RecetaDto) {
-            binding.tvPrescDoctor.text = "Dr. ${receta.doctorNombre} ${receta.doctorApellido}"
-            binding.tvPrescDate.text = "Fecha: ${receta.fecha}"
+            binding.tvPrescDoctor.text = "Dr. ${receta.doctorNombre}"
+            binding.tvPrescDate.text = "Fecha: ${receta.fechaEmision}"
             binding.tvPrescDiagnosis.text = "Diagnóstico: ${receta.diagnostico}"
             binding.root.setOnClickListener { onRecetaClick(receta) }
         }

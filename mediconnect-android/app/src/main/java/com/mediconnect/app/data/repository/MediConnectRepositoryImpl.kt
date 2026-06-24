@@ -47,7 +47,20 @@ class MediConnectRepositoryImpl @Inject constructor(
         direccion: String?
     ): ApiResponse<AuthResponse> {
         val response = safeApiCall {
-            api.register(RegisterRequest(nombre, apellido, email, contrasena, telefono, direccion))
+            api.register(
+                RegisterRequest(
+                    email = email,
+                    password = contrasena,
+                    nombre = nombre,
+                    apellido = apellido,
+                    telefono = telefono,
+                    fechaNacimiento = null,
+                    genero = null,
+                    direccion = direccion,
+                    grupoSanguineo = null,
+                    alergias = null
+                )
+            )
         }
         if (response.success && response.data != null) {
             saveSession(response.data)
@@ -109,9 +122,9 @@ class MediConnectRepositoryImpl @Inject constructor(
         nombre: String,
         apellido: String,
         telefono: String?,
-        direccion: String?
+        fotoUrl: String?
     ): ApiResponse<UserDto> {
-        return safeApiCall { api.updateProfile(UpdateUserRequest(nombre, apellido, telefono, direccion)) }
+        return safeApiCall { api.updateProfile(UpdateUserRequest(nombre, apellido, telefono, fotoUrl)) }
     }
 
     override suspend fun changePassword(current: String, new: String): ApiResponse<Unit> {
@@ -122,7 +135,23 @@ class MediConnectRepositoryImpl @Inject constructor(
     override fun getDoctorsFlow(): Flow<List<DoctorDto>> {
         return doctorDao.getDoctorsFlow().map { cacheList ->
             cacheList.map {
-                DoctorDto(it.id, it.nombre, it.apellido, it.especialidad, it.consultorio, it.telefono, it.email, it.ratingPromedio)
+                DoctorDto(
+                    id = it.id,
+                    userId = "",
+                    nombre = it.nombre,
+                    apellido = it.apellido,
+                    email = it.email,
+                    telefono = it.telefono,
+                    fotoUrl = null,
+                    especialidad = it.especialidad,
+                    numeroColegiado = "",
+                    descripcion = null,
+                    horarioInicio = null,
+                    horarioFin = null,
+                    costoCita = 0.0,
+                    promedioValoracion = it.promedioValoracion,
+                    totalValoraciones = null
+                )
             }
         }
     }
@@ -131,7 +160,15 @@ class MediConnectRepositoryImpl @Inject constructor(
         val response = safeApiCall { api.getDoctors() }
         if (response.success && response.data != null) {
             val cacheList = response.data.map {
-                DoctorCache(it.id, it.nombre, it.apellido, it.especialidad, it.consultorio, it.telefono, it.email, it.ratingPromedio)
+                DoctorCache(
+                    id = it.id,
+                    nombre = it.nombre,
+                    apellido = it.apellido,
+                    especialidad = it.especialidad,
+                    telefono = it.telefono,
+                    email = it.email,
+                    promedioValoracion = it.promedioValoracion
+                )
             }
             doctorDao.clearDoctors()
             doctorDao.insertDoctors(cacheList)
@@ -140,27 +177,62 @@ class MediConnectRepositoryImpl @Inject constructor(
     }
 
     override suspend fun registerDoctor(
+        email: String,
+        password: String,
         nombre: String,
         apellido: String,
-        email: String,
+        telefono: String?,
         especialidad: String,
-        consultorio: String?,
-        telefono: String?
+        numeroColegiado: String,
+        descripcion: String?,
+        costoCita: Double,
+        horarioInicio: String?,
+        horarioFin: String?,
+        diasAtencion: String?
     ): ApiResponse<DoctorDto> {
         return safeApiCall {
-            api.registerDoctor(DoctorRegistrationRequest(nombre, apellido, email, especialidad, consultorio, telefono))
+            api.registerDoctor(
+                DoctorRegistrationRequest(
+                    email = email,
+                    password = password,
+                    nombre = nombre,
+                    apellido = apellido,
+                    telefono = telefono,
+                    especialidad = especialidad,
+                    numeroColegiado = numeroColegiado,
+                    descripcion = descripcion,
+                    costoCita = costoCita,
+                    horarioInicio = horarioInicio,
+                    horarioFin = horarioFin,
+                    diasAtencion = diasAtencion
+                )
+            )
         }
     }
 
-    override suspend fun getHorarios(doctorId: Long): ApiResponse<List<HorarioDisponibleDto>> {
-        return safeApiCall { api.getHorariosDisponibles(doctorId) }
+    override suspend fun getHorarios(doctorId: String, fecha: String): ApiResponse<List<HorarioDisponibleDto>> {
+        return safeApiCall { api.getHorariosDisponibles(doctorId, fecha) }
     }
 
     // Appointments (Citas)
     override fun getCitasFlow(): Flow<List<CitaDto>> {
         return citaDao.getCitasFlow().map { cacheList ->
             cacheList.map {
-                CitaDto(it.id, it.doctorId, it.doctorNombre, it.doctorApellido, it.doctorEspecialidad, it.pacienteId, it.fecha, it.hora, it.motivo, it.estado, it.codigoCheckIn)
+                CitaDto(
+                    id = it.id,
+                    pacienteId = it.pacienteId,
+                    pacienteNombre = "",
+                    doctorId = it.doctorId,
+                    doctorNombre = it.doctorNombre,
+                    doctorEspecialidad = it.doctorEspecialidad,
+                    fechaHora = it.fechaHora,
+                    motivo = it.motivo,
+                    notas = null,
+                    estado = it.estado,
+                    codigoQr = it.codigoQr,
+                    notasCancelacion = null,
+                    createdAt = null
+                )
             }
         }
     }
@@ -169,7 +241,17 @@ class MediConnectRepositoryImpl @Inject constructor(
         val response = safeApiCall { api.getCitas() }
         if (response.success && response.data != null) {
             val cacheList = response.data.map {
-                CitaCache(it.id, it.doctorId, it.doctorNombre, it.doctorApellido, it.doctorEspecialidad, it.pacienteId, it.fecha, it.hora, it.motivo, it.estado, it.codigoCheckIn)
+                CitaCache(
+                    id = it.id,
+                    doctorId = it.doctorId,
+                    doctorNombre = it.doctorNombre,
+                    doctorEspecialidad = it.doctorEspecialidad,
+                    pacienteId = it.pacienteId,
+                    fechaHora = it.fechaHora,
+                    motivo = it.motivo,
+                    estado = it.estado,
+                    codigoQr = it.codigoQr
+                )
             }
             citaDao.clearCitas()
             citaDao.insertCitas(cacheList)
@@ -178,19 +260,19 @@ class MediConnectRepositoryImpl @Inject constructor(
     }
 
     override suspend fun crearCita(
-        doctorId: Long,
-        fecha: String,
-        hora: String,
-        motivo: String
+        doctorId: String,
+        fechaHora: String,
+        motivo: String,
+        notas: String?
     ): ApiResponse<CitaDto> {
-        return safeApiCall { api.crearCita(CrearCitaRequest(doctorId, fecha, hora, motivo)) }
+        return safeApiCall { api.crearCita(CrearCitaRequest(doctorId, fechaHora, motivo, notas)) }
     }
 
-    override suspend fun cancelarCita(citaId: Long, motivo: String?): ApiResponse<CitaDto> {
+    override suspend fun cancelarCita(citaId: String, motivo: String): ApiResponse<CitaDto> {
         return safeApiCall { api.cancelarCita(citaId, CancelarCitaRequest(motivo)) }
     }
 
-    override suspend fun checkIn(citaId: Long, code: String): ApiResponse<CitaDto> {
+    override suspend fun checkIn(citaId: String, code: String): ApiResponse<CitaDto> {
         return safeApiCall { api.checkIn(citaId, CheckInRequest(code)) }
     }
 
@@ -200,12 +282,12 @@ class MediConnectRepositoryImpl @Inject constructor(
     }
 
     override suspend fun crearReceta(
-        citaId: Long,
+        citaId: String,
         diagnostico: String,
-        indicaciones: String,
-        detalles: List<DetalleRecetaDto>
+        observaciones: String?,
+        detalles: List<DetalleRequest>
     ): ApiResponse<RecetaDto> {
-        return safeApiCall { api.crearReceta(CrearRecetaRequest(citaId, diagnostico, indicaciones, detalles)) }
+        return safeApiCall { api.crearReceta(CrearRecetaRequest(citaId, diagnostico, observaciones, detalles)) }
     }
 
     // Medical History
@@ -214,12 +296,25 @@ class MediConnectRepositoryImpl @Inject constructor(
     }
 
     override suspend fun crearHistorial(
-        pacienteId: Long,
+        tipo: String,
+        titulo: String,
         descripcion: String,
-        diagnostico: String,
-        tratamiento: String?
+        fecha: String?,
+        doctorNombre: String?,
+        archivoUrl: String?
     ): ApiResponse<HistorialMedicoDto> {
-        return safeApiCall { api.crearHistorial(CrearHistorialRequest(pacienteId, descripcion, diagnostico, tratamiento)) }
+        return safeApiCall {
+            api.crearHistorial(
+                CrearHistorialRequest(
+                    tipo = tipo,
+                    titulo = titulo,
+                    descripcion = descripcion,
+                    fecha = fecha,
+                    doctorNombre = doctorNombre,
+                    archivoUrl = archivoUrl
+                )
+            )
+        }
     }
 
     // Notifications
@@ -227,20 +322,20 @@ class MediConnectRepositoryImpl @Inject constructor(
         return safeApiCall { api.getNotificaciones() }
     }
 
-    override suspend fun marcarNotificacionLeida(id: Long): ApiResponse<NotificacionDto> {
+    override suspend fun marcarNotificacionLeida(id: String): ApiResponse<Void> {
         return safeApiCall { api.marcarLeida(id) }
     }
 
     // Reviews
     override suspend fun crearValoracion(
-        doctorId: Long,
-        rating: Int,
-        comment: String?
+        doctorId: String,
+        calificacion: Int,
+        comentario: String?
     ): ApiResponse<ValoracionDto> {
-        return safeApiCall { api.crearValoracion(CrearValoracionRequest(doctorId, rating, comment)) }
+        return safeApiCall { api.crearValoracion(doctorId, CrearValoracionRequest(doctorId, calificacion, comentario)) }
     }
 
-    override suspend fun getValoraciones(doctorId: Long): ApiResponse<List<ValoracionDto>> {
+    override suspend fun getValoraciones(doctorId: String): ApiResponse<List<ValoracionDto>> {
         return safeApiCall { api.getValoraciones(doctorId) }
     }
 }

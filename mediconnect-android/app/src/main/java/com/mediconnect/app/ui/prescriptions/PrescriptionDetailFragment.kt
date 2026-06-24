@@ -23,12 +23,12 @@ class PrescriptionDetailFragment : Fragment() {
 
     private val viewModel: PrescriptionsViewModel by viewModels()
     private lateinit var adapter: MedicinesAdapter
-    private var recetaId: Long = 0
+    private var recetaId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            recetaId = it.getLong("recetaId")
+            recetaId = it.getString("recetaId") ?: ""
         }
     }
 
@@ -49,10 +49,10 @@ class PrescriptionDetailFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.selectedPrescription.collectLatest { receta ->
                 if (receta != null) {
-                    binding.tvDetailPrescDoctor.text = "Dr. ${receta.doctorNombre} ${receta.doctorApellido}"
-                    binding.tvDetailPrescDate.text = "Fecha de Emisión: ${receta.fecha}"
+                    binding.tvDetailPrescDoctor.text = "Dr. ${receta.doctorNombre}"
+                    binding.tvDetailPrescDate.text = "Fecha de Emisión: ${receta.fechaEmision}"
                     binding.tvDetailPrescDiagnosis.text = receta.diagnostico
-                    binding.tvDetailPrescInstructions.text = receta.indicaciones
+                    binding.tvDetailPrescInstructions.text = receta.observaciones ?: ""
                     adapter.submitList(receta.detalles)
                 }
             }

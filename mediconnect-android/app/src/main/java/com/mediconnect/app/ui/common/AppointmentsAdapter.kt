@@ -32,12 +32,12 @@ class AppointmentsAdapter(
 
     inner class AppointmentViewHolder(private val binding: ItemAppointmentBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(cita: CitaDto) {
-            binding.tvApptDoctor.text = "Dr. ${cita.doctorNombre} ${cita.doctorApellido} (${cita.doctorEspecialidad})"
-            binding.tvApptDateTime.text = "Fecha: ${cita.fecha} | Hora: ${cita.hora}"
+            binding.tvApptDoctor.text = "Dr. ${cita.doctorNombre} (${cita.doctorEspecialidad})"
+            binding.tvApptDateTime.text = "Fecha/Hora: ${cita.fechaHora}"
             binding.tvApptMotivo.text = "Motivo: ${cita.motivo}"
             binding.tvApptStatus.text = "Estado: ${cita.estado}"
 
-            if (cita.estado.uppercase() == "PENDIENTE") {
+            if (cita.estado.uppercase() == "PENDIENTE" || cita.estado.uppercase() == "CONFIRMADA") {
                 binding.btnCancelAppt.visibility = View.VISIBLE
                 binding.btnCheckInAppt.visibility = View.VISIBLE
                 binding.btnCancelAppt.setOnClickListener { onCancelClick(cita) }

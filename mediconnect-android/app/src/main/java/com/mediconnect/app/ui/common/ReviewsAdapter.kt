@@ -28,7 +28,7 @@ class ReviewsAdapter : RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder>() {
 
     inner class ReviewViewHolder(private val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(review: ValoracionDto) {
-            binding.tvReviewRating.text = "Calificación: ${review.puntuacion}/5 | Fecha: ${review.fecha}"
+            binding.tvReviewRating.text = "Calificación: ${review.calificacion}/5 | Fecha: ${review.createdAt ?: ""}"
             binding.tvReviewComment.text = review.comentario ?: "(Sin comentario)"
         }
     }

@@ -62,7 +62,9 @@ class AppointmentCreateFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            viewModel.crearCita(doctor.id, date, time, motivo)
+            // Combine date and time into a single LocalDateTime ISO 8601 string
+            val fechaHora = "${date}T${time}:00"
+            viewModel.crearCita(doctor.id, fechaHora, motivo)
         }
 
         lifecycleScope.launch {

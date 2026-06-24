@@ -44,14 +44,14 @@ class ProfileFragment : Fragment() {
             val nombre = binding.etProfileNombre.text.toString().trim()
             val apellido = binding.etProfileApellido.text.toString().trim()
             val telefono = binding.etProfileTelefono.text.toString().trim().ifEmpty { null }
-            val direccion = binding.etProfileDireccion.text.toString().trim().ifEmpty { null }
+            val fotoUrl = binding.etProfileDireccion.text.toString().trim().ifEmpty { null }
 
             if (nombre.isEmpty() || apellido.isEmpty()) {
                 Toast.makeText(context, "Nombre y Apellido son requeridos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            viewModel.updateProfile(nombre, apellido, telefono, direccion)
+            viewModel.updateProfile(nombre, apellido, telefono, fotoUrl)
         }
 
         binding.btnChangePassword.setOnClickListener {
@@ -72,7 +72,7 @@ class ProfileFragment : Fragment() {
                     binding.etProfileNombre.setText(profile.nombre)
                     binding.etProfileApellido.setText(profile.apellido)
                     binding.etProfileTelefono.setText(profile.telefono ?: "")
-                    binding.etProfileDireccion.setText(profile.direccion ?: "")
+                    binding.etProfileDireccion.setText(profile.fotoUrl ?: "")
                 }
             }
         }

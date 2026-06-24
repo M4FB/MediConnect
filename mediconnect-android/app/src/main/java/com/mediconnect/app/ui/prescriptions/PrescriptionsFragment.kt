@@ -65,7 +65,7 @@ class PrescriptionsFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = PrescriptionsAdapter { receta ->
             val bundle = Bundle().apply {
-                putLong("recetaId", receta.id)
+                putString("recetaId", receta.id)
             }
             findNavController().navigate(R.id.action_prescriptionsFragment_to_prescriptionDetailFragment, bundle)
         }

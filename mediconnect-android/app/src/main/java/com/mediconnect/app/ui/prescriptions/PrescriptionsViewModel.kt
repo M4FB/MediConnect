@@ -41,7 +41,7 @@ class PrescriptionsViewModel @Inject constructor(
         }
     }
 
-    fun loadPrescriptionDetail(id: Long) {
+    fun loadPrescriptionDetail(id: String) {
         viewModelScope.launch {
             _isLoading.value = true
             val response = repository.getRecetas()

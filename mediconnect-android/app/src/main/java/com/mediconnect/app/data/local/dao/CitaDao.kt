@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CitaDao {
-    @Query("SELECT * FROM citas ORDER BY fecha DESC, hora DESC")
+    @Query("SELECT * FROM citas ORDER BY fechaHora DESC")
     fun getCitasFlow(): Flow<List<CitaCache>>
 
-    @Query("SELECT * FROM citas ORDER BY fecha DESC, hora DESC")
+    @Query("SELECT * FROM citas ORDER BY fechaHora DESC")
     suspend fun getCitas(): List<CitaCache>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

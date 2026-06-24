@@ -17,6 +17,9 @@ import com.mediconnect.app.ui.common.ReviewsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class DoctorDetailFragment : Fragment() {
@@ -28,14 +31,18 @@ class DoctorDetailFragment : Fragment() {
     private lateinit var horariosAdapter: HorariosAdapter
     private lateinit var reviewsAdapter: ReviewsAdapter
 
-    private var doctorId: Long = 0
+    private var doctorId: String = ""
     private var doctorNombre: String = ""
     private var doctorEspecialidad: String = ""
+
+    private val selectedFecha: String by lazy {
+        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            doctorId = it.getLong("doctorId")
+            doctorId = it.getString("doctorId") ?: ""
             doctorNombre = it.getString("doctorNombre") ?: ""
             doctorEspecialidad = it.getString("doctorEspecialidad") ?: ""
         }
@@ -57,7 +64,7 @@ class DoctorDetailFragment : Fragment() {
         binding.tvDetailContact.text = "Cargando contacto e información..."
 
         setupRecyclerViews()
-        viewModel.loadDoctorDetails(doctorId)
+        viewModel.loadDoctorDetails(doctorId, selectedFecha)
 
         binding.btnSubmitReview.setOnClickListener {
             val ratingStr = binding.spinnerRating.selectedItem.toString()
@@ -86,7 +93,7 @@ class DoctorDetailFragment : Fragment() {
                 if (appointment != null) {
                     Toast.makeText(context, "¡Cita agendada exitosamente!", Toast.LENGTH_LONG).show()
                     viewModel.clearBookingState()
-                    viewModel.loadDoctorDetails(doctorId)
+                    viewModel.loadDoctorDetails(doctorId, selectedFecha)
                 }
             }
         }
@@ -114,12 +121,13 @@ class DoctorDetailFragment : Fragment() {
             }
             AlertDialog.Builder(requireContext())
                 .setTitle("Agendar Cita")
-                .setMessage("Ingrese el motivo de su consulta para la fecha ${horario.fecha}:")
+                .setMessage("Ingrese el motivo de su consulta para la hora ${horario.hora}:")
                 .setView(etMotivo)
                 .setPositiveButton("Agendar") { dialog, _ ->
                     val motivo = etMotivo.text.toString().trim()
                     if (motivo.isNotEmpty()) {
-                        viewModel.agendarCita(doctorId, horario.fecha, horario.horaInicio, motivo)
+                        val fechaHora = "${selectedFecha}T${horario.hora}"
+                        viewModel.agendarCita(doctorId, fechaHora, motivo)
                     } else {
                         Toast.makeText(context, "El motivo es requerido", Toast.LENGTH_SHORT).show()
                     }

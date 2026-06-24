@@ -42,7 +42,7 @@ class NotificationsViewModel @Inject constructor(
         }
     }
 
-    fun marcarComoLeida(id: Long) {
+    fun marcarComoLeida(id: String) {
         viewModelScope.launch {
             val response = repository.marcarNotificacionLeida(id)
             if (response.success) {

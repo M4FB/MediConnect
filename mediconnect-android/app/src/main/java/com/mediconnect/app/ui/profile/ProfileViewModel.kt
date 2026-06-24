@@ -48,10 +48,10 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun updateProfile(nombre: String, apellido: String, telefono: String?, direccion: String?) {
+    fun updateProfile(nombre: String, apellido: String, telefono: String?, fotoUrl: String?) {
         viewModelScope.launch {
             _isLoading.value = true
-            val response = repository.updateProfile(nombre, apellido, telefono, direccion)
+            val response = repository.updateProfile(nombre, apellido, telefono, fotoUrl)
             if (response.success && response.data != null) {
                 _userProfile.value = response.data
                 _updateSuccess.value = true

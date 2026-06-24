@@ -19,16 +19,20 @@ data class PageResponse<T>(
 // Auth DTOs
 data class LoginRequest(
     val email: String,
-    val contrasena: String
+    val password: String
 )
 
 data class RegisterRequest(
+    val email: String,
+    val password: String,
     val nombre: String,
     val apellido: String,
-    val email: String,
-    val contrasena: String,
     val telefono: String?,
-    val direccion: String?
+    val fechaNacimiento: String?, // YYYY-MM-DD
+    val genero: String?,
+    val direccion: String?,
+    val grupoSanguineo: String?,
+    val alergias: String?
 )
 
 data class AuthResponse(
@@ -44,152 +48,184 @@ data class RefreshTokenRequest(
 
 // User / Profile DTOs
 data class UserDto(
-    val id: Long,
+    val id: String, // UUID
     val nombre: String,
     val apellido: String,
     val email: String,
     val telefono: String?,
-    val direccion: String?,
-    val rol: String
+    val role: String, // Matches "role" in backend JSON
+    val activo: Boolean,
+    val fotoUrl: String?,
+    val createdAt: String?
 )
 
 data class UpdateUserRequest(
     val nombre: String,
     val apellido: String,
     val telefono: String?,
-    val direccion: String?
+    val fotoUrl: String?
 )
 
 data class ChangePasswordRequest(
-    val contrasenaActual: String,
-    val contrasenaNueva: String
+    val oldPassword: String,
+    val newPassword: String
 )
 
 // Doctor DTOs
 data class DoctorDto(
-    val id: Long,
+    val id: String, // UUID
+    val userId: String, // UUID
     val nombre: String,
     val apellido: String,
-    val especialidad: String,
-    val consultorio: String?,
-    val telefono: String?,
     val email: String,
-    val ratingPromedio: Double?
+    val telefono: String?,
+    val fotoUrl: String?,
+    val especialidad: String,
+    val numeroColegiado: String,
+    val descripcion: String?,
+    val horarioInicio: String?,
+    val horarioFin: String?,
+    val costoCita: Double,
+    val promedioValoracion: Double?,
+    val totalValoraciones: Long?
 )
 
 data class DoctorRegistrationRequest(
+    val email: String,
+    val password: String,
     val nombre: String,
     val apellido: String,
-    val email: String,
+    val telefono: String?,
     val especialidad: String,
-    val consultorio: String?,
-    val telefono: String?
+    val numeroColegiado: String,
+    val descripcion: String?,
+    val costoCita: Double,
+    val horarioInicio: String?,
+    val horarioFin: String?,
+    val diasAtencion: String?
 )
 
 data class HorarioDisponibleDto(
-    val id: Long,
-    val doctorId: Long,
-    val fecha: String,
-    val horaInicio: String,
-    val horaFin: String,
+    val hora: String, // LocalTime
     val disponible: Boolean
 )
 
 // Citas DTOs
 data class CrearCitaRequest(
-    val doctorId: Long,
-    val fecha: String,
-    val hora: String,
-    val motivo: String
+    val doctorId: String, // UUID
+    val fechaHora: String, // LocalDateTime
+    val motivo: String,
+    val notas: String?
 )
 
 data class CitaDto(
-    val id: Long,
-    val doctorId: Long,
+    val id: String, // UUID
+    val pacienteId: String, // UUID
+    val pacienteNombre: String,
+    val doctorId: String, // UUID
     val doctorNombre: String,
-    val doctorApellido: String,
     val doctorEspecialidad: String,
-    val pacienteId: Long,
-    val fecha: String,
-    val hora: String,
+    val fechaHora: String, // LocalDateTime
     val motivo: String,
-    val estado: String, // e.g. PENDIENTE, COMPLETADA, CANCELADA
-    val codigoCheckIn: String?
+    val notas: String?,
+    val estado: String, // e.g. PENDIENTE, CONFIRMADA, EN_CURSO, COMPLETADA, CANCELADA
+    val codigoQr: String?,
+    val notasCancelacion: String?,
+    val createdAt: String?
 )
 
 data class CancelarCitaRequest(
-    val motivo: String?
+    val motivo: String
 )
 
 data class CheckInRequest(
-    val codigoCheckIn: String
+    val codigoQr: String
 )
 
 // Recetas DTOs
 data class DetalleRecetaDto(
+    val id: String, // UUID
     val medicamento: String,
     val dosis: String,
     val frecuencia: String,
-    val duracion: String
+    val duracion: String,
+    val instrucciones: String?
 )
 
 data class CrearRecetaRequest(
-    val citaId: Long,
+    val citaId: String, // UUID
     val diagnostico: String,
-    val indicaciones: String,
-    val detalles: List<DetalleRecetaDto>
+    val observaciones: String?,
+    val detalles: List<DetalleRequest>
+)
+
+data class DetalleRequest(
+    val medicamento: String,
+    val dosis: String,
+    val frecuencia: String,
+    val duracion: String,
+    val instrucciones: String?
 )
 
 data class RecetaDto(
-    val id: Long,
-    val citaId: Long,
+    val id: String, // UUID
+    val citaId: String, // UUID
+    val doctorId: String, // UUID
     val doctorNombre: String,
-    val doctorApellido: String,
-    val fecha: String,
+    val pacienteId: String, // UUID
+    val pacienteNombre: String,
     val diagnostico: String,
-    val indicaciones: String,
-    val detalles: List<DetalleRecetaDto>
+    val observaciones: String?,
+    val fechaEmision: String, // LocalDateTime/LocalDate
+    val detalles: List<DetalleRecetaDto>,
+    val createdAt: String?
 )
 
 // Historial Clinico DTOs
 data class CrearHistorialRequest(
-    val pacienteId: Long,
+    val tipo: String, // TipoHistorial enum: CONSULTA, CIRUGIA, EXAMEN, VACUNA, OTRO
+    val titulo: String,
     val descripcion: String,
-    val diagnostico: String,
-    val tratamiento: String?
+    val fecha: String?, // LocalDateTime
+    val doctorNombre: String?,
+    val archivoUrl: String?
 )
 
 data class HistorialMedicoDto(
-    val id: Long,
-    val pacienteId: Long,
-    val fecha: String,
-    val doctorNombre: String,
-    val doctorApellido: String,
+    val id: String, // UUID
+    val pacienteId: String, // UUID
+    val tipo: String,
+    val titulo: String,
     val descripcion: String,
-    val diagnostico: String,
-    val tratamiento: String?
+    val fecha: String, // LocalDateTime
+    val doctorNombre: String?,
+    val archivoUrl: String?,
+    val createdAt: String?
 )
 
 // Notificaciones
 data class NotificacionDto(
-    val id: Long,
+    val id: String, // UUID
     val titulo: String,
     val mensaje: String,
-    val fecha: String,
-    val leido: Boolean
+    val tipo: String,
+    val leida: Boolean, // Matches "leida" in backend JSON
+    val createdAt: String?
 )
 
 // Valoraciones
 data class CrearValoracionRequest(
-    val doctorId: Long,
-    val puntuacion: Int,
+    val doctorId: String?, // UUID
+    val calificacion: Int, // Matches "calificacion" in backend JSON
     val comentario: String?
 )
 
 data class ValoracionDto(
-    val id: Long,
-    val doctorId: Long,
-    val puntuacion: Int,
+    val id: String, // UUID
+    val pacienteId: String, // UUID
+    val pacienteNombre: String,
+    val doctorId: String, // UUID
+    val calificacion: Int,
     val comentario: String?,
-    val fecha: String
+    val createdAt: String?
 )

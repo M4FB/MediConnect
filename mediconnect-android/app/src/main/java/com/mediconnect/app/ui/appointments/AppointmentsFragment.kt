@@ -79,7 +79,8 @@ class AppointmentsFragment : Fragment() {
                     .setView(etMotivo)
                     .setPositiveButton("Confirmar Cancelación") { dialog, _ ->
                         val motivo = etMotivo.text.toString().trim()
-                        viewModel.cancelarCita(appointment.id, if (motivo.isEmpty()) null else motivo)
+                        val finalMotivo = if (motivo.isEmpty()) "Cancelada por el paciente" else motivo
+                        viewModel.cancelarCita(appointment.id, finalMotivo)
                         dialog.dismiss()
                     }
                     .setNegativeButton("Volver", null)
@@ -87,8 +88,8 @@ class AppointmentsFragment : Fragment() {
             },
             onCheckInClick = { appointment ->
                 val bundle = Bundle().apply {
-                    putLong("citaId", appointment.id)
-                    putString("codigoCheckIn", appointment.codigoCheckIn ?: "MC-CHECK-${appointment.id}")
+                    putString("citaId", appointment.id)
+                    putString("codigoCheckIn", appointment.codigoQr ?: "MC-CHECK-${appointment.id}")
                 }
                 findNavController().navigate(R.id.action_appointmentsFragment_to_appointmentCheckInFragment, bundle)
             }

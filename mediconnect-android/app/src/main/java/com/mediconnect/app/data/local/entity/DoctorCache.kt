@@ -5,12 +5,11 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "doctors")
 data class DoctorCache(
-    @PrimaryKey val id: Long,
+    @PrimaryKey val id: String,
     val nombre: String,
     val apellido: String,
     val especialidad: String,
-    val consultorio: String?,
     val telefono: String?,
     val email: String,
-    val ratingPromedio: Double?
+    val promedioValoracion: Double?
 )

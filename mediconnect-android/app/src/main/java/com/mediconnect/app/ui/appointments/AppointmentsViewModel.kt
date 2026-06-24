@@ -3,7 +3,6 @@ package com.mediconnect.app.ui.appointments
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mediconnect.app.data.remote.dto.CitaDto
-import com.mediconnect.app.data.remote.dto.DoctorDto
 import com.mediconnect.app.data.repository.MediConnectRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,10 +46,10 @@ class AppointmentsViewModel @Inject constructor(
         }
     }
 
-    fun crearCita(doctorId: Long, fecha: String, hora: String, motivo: String) {
+    fun crearCita(doctorId: String, fechaHora: String, motivo: String) {
         viewModelScope.launch {
             _isLoading.value = true
-            val response = repository.crearCita(doctorId, fecha, hora, motivo)
+            val response = repository.crearCita(doctorId, fechaHora, motivo, null)
             if (response.success) {
                 _createSuccess.value = true
                 refreshAppointments()
@@ -61,7 +60,7 @@ class AppointmentsViewModel @Inject constructor(
         }
     }
 
-    fun cancelarCita(citaId: Long, motivo: String?) {
+    fun cancelarCita(citaId: String, motivo: String) {
         viewModelScope.launch {
             _isLoading.value = true
             val response = repository.cancelarCita(citaId, motivo)
@@ -74,7 +73,7 @@ class AppointmentsViewModel @Inject constructor(
         }
     }
 
-    fun checkIn(citaId: Long, code: String) {
+    fun checkIn(citaId: String, code: String) {
         viewModelScope.launch {
             _isLoading.value = true
             val response = repository.checkIn(citaId, code)

@@ -52,16 +52,35 @@ class DoctorsViewModel @Inject constructor(
     }
 
     fun registerDoctor(
+        email: String,
+        password: String,
         nombre: String,
         apellido: String,
-        email: String,
+        telefono: String?,
         especialidad: String,
-        consultorio: String?,
-        telefono: String?
+        numeroColegiado: String,
+        descripcion: String?,
+        costoCita: Double,
+        horarioInicio: String?,
+        horarioFin: String?,
+        diasAtencion: String?
     ) {
         viewModelScope.launch {
             _isLoading.value = true
-            val response = repository.registerDoctor(nombre, apellido, email, especialidad, consultorio, telefono)
+            val response = repository.registerDoctor(
+                email = email,
+                password = password,
+                nombre = nombre,
+                apellido = apellido,
+                telefono = telefono,
+                especialidad = especialidad,
+                numeroColegiado = numeroColegiado,
+                descripcion = descripcion,
+                costoCita = costoCita,
+                horarioInicio = horarioInicio,
+                horarioFin = horarioFin,
+                diasAtencion = diasAtencion
+            )
             if (response.success) {
                 refreshDoctors()
             } else {
@@ -71,10 +90,10 @@ class DoctorsViewModel @Inject constructor(
         }
     }
 
-    fun loadDoctorDetails(doctorId: Long) {
+    fun loadDoctorDetails(doctorId: String, fecha: String) {
         viewModelScope.launch {
             _isLoading.value = true
-            val hResponse = repository.getHorarios(doctorId)
+            val hResponse = repository.getHorarios(doctorId, fecha)
             if (hResponse.success && hResponse.data != null) {
                 _horarios.value = hResponse.data
             }
@@ -86,21 +105,26 @@ class DoctorsViewModel @Inject constructor(
         }
     }
 
-    fun addReview(doctorId: Long, rating: Int, comment: String) {
+    fun addReview(doctorId: String, calificacion: Int, comment: String) {
         viewModelScope.launch {
-            val response = repository.crearValoracion(doctorId, rating, comment)
+            val response = repository.crearValoracion(doctorId, calificacion, comment)
             if (response.success) {
-                loadDoctorDetails(doctorId)
+                // Reload with a default date placeholder or today's date placeholder
+                // We'll call loadDoctorDetails. To keep it safe, we'll reload without modifying schedules
+                // or retrieve them. Since we don't have the date here, let's pass a dummy or keep it.
+                // Let's use today's date as a fallback.
+                val todayStr = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
+                loadDoctorDetails(doctorId, todayStr)
             } else {
                 _error.value = response.message ?: "Error al enviar reseña"
             }
         }
     }
 
-    fun agendarCita(doctorId: Long, fecha: String, hora: String, motivo: String) {
+    fun agendarCita(doctorId: String, fechaHora: String, motivo: String) {
         viewModelScope.launch {
             _isLoading.value = true
-            val response = repository.crearCita(doctorId, fecha, hora, motivo)
+            val response = repository.crearCita(doctorId, fechaHora, motivo, null)
             if (response.success && response.data != null) {
                 _bookingSuccess.value = response.data
             } else {

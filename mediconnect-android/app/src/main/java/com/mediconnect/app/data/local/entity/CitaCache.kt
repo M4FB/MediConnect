@@ -5,15 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "citas")
 data class CitaCache(
-    @PrimaryKey val id: Long,
-    val doctorId: Long,
+    @PrimaryKey val id: String,
+    val doctorId: String,
     val doctorNombre: String,
-    val doctorApellido: String,
     val doctorEspecialidad: String,
-    val pacienteId: Long,
-    val fecha: String,
-    val hora: String,
+    val pacienteId: String,
+    val fechaHora: String,
     val motivo: String,
     val estado: String,
-    val codigoCheckIn: String?
+    val codigoQr: String?
 )

@@ -30,7 +30,7 @@ class HorariosAdapter(
 
     inner class HorarioViewHolder(private val binding: ItemHorarioBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(horario: HorarioDisponibleDto) {
-            binding.tvHorarioDateTime.text = "${horario.fecha} de ${horario.horaInicio} a ${horario.horaFin}"
+            binding.tvHorarioDateTime.text = "Disponible a las: ${horario.hora}"
             binding.btnBookHorario.setOnClickListener { onBookClick(horario) }
         }
     }

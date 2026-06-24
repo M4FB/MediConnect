@@ -29,10 +29,10 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
     inner class HistoryViewHolder(private val binding: ItemHistoryBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(hist: HistorialMedicoDto) {
             binding.tvHistDate.text = "Fecha: ${hist.fecha}"
-            binding.tvHistDoctor.text = "Dr/Dra: ${hist.doctorNombre} ${hist.doctorApellido}"
-            binding.tvHistDiagnosis.text = "Diagnóstico: ${hist.diagnostico}"
+            binding.tvHistDoctor.text = "Doctor/a: ${hist.doctorNombre ?: "No especificado"}"
+            binding.tvHistDiagnosis.text = "Tipo: ${hist.tipo} - Título: ${hist.titulo}"
             binding.tvHistDescription.text = "Descripción: ${hist.descripcion}"
-            binding.tvHistTreatment.text = "Tratamiento: ${hist.tratamiento ?: "Ninguno"}"
+            binding.tvHistTreatment.text = "Adjunto: ${hist.archivoUrl ?: "Ninguno"}"
         }
     }
 }

@@ -26,13 +26,13 @@ class AppointmentCheckInFragment : Fragment() {
 
     private val viewModel: AppointmentsViewModel by viewModels()
 
-    private var citaId: Long = 0
+    private var citaId: String = ""
     private var codigoCheckIn: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            citaId = it.getLong("citaId")
+            citaId = it.getString("citaId") ?: ""
             codigoCheckIn = it.getString("codigoCheckIn") ?: ""
         }
     }

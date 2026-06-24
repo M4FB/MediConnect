@@ -32,10 +32,10 @@ class NotificationsAdapter(
     inner class NotificationViewHolder(private val binding: ItemNotificationBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(notif: NotificacionDto) {
             binding.tvNotifTitle.text = notif.titulo
-            binding.tvNotifDate.text = notif.fecha
+            binding.tvNotifDate.text = notif.createdAt ?: ""
             binding.tvNotifMessage.text = notif.mensaje
 
-            if (notif.leido) {
+            if (notif.leida) {
                 binding.btnMarkRead.visibility = View.GONE
                 binding.root.alpha = 0.6f
             } else {

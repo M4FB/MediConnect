@@ -32,8 +32,8 @@ class DoctorsAdapter(
         fun bind(doctor: DoctorDto) {
             binding.tvDoctorName.text = "Dr. ${doctor.nombre} ${doctor.apellido}"
             binding.tvDoctorSpecialty.text = doctor.especialidad
-            val rating = doctor.ratingPromedio?.let { "Calificación: $it/5.0" } ?: "Sin calificaciones"
-            binding.tvDoctorRating.text = "$rating | Consultorio: ${doctor.consultorio ?: "N/A"}"
+            val rating = doctor.promedioValoracion?.let { "Calificación: $it/5.0" } ?: "Sin calificaciones"
+            binding.tvDoctorRating.text = rating
             binding.root.setOnClickListener { onDoctorClick(doctor) }
         }
     }

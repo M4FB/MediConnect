@@ -28,8 +28,8 @@ class HistoryViewModel @Inject constructor(
     private val _createSuccess = MutableStateFlow(false)
     val createSuccess: StateFlow<Boolean> = _createSuccess.asStateFlow()
 
-    private val _patientId = MutableStateFlow<Long?>(null)
-    val patientId: StateFlow<Long?> = _patientId.asStateFlow()
+    private val _patientId = MutableStateFlow<String?>(null)
+    val patientId: StateFlow<String?> = _patientId.asStateFlow()
 
     init {
         loadHistory()
@@ -58,10 +58,18 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
-    fun crearHistorial(pacienteId: Long, descripcion: String, diagnostico: String, tratamiento: String?) {
+    fun crearHistorial(descripcion: String, diagnostico: String, tratamiento: String?) {
         viewModelScope.launch {
             _isLoading.value = true
-            val response = repository.crearHistorial(pacienteId, descripcion, diagnostico, tratamiento)
+            val fullDesc = if (!tratamiento.isNullOrBlank()) "$descripcion\nTratamiento: $tratamiento" else descripcion
+            val response = repository.crearHistorial(
+                tipo = "CONSULTA",
+                titulo = diagnostico,
+                descripcion = fullDesc,
+                fecha = null,
+                doctorNombre = null,
+                archivoUrl = null
+            )
             if (response.success) {
                 _createSuccess.value = true
                 loadHistory()
