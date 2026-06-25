@@ -1,170 +1,170 @@
-# 📚 Documentación General del Proyecto — MediConnect
+# Resumen Tecnico del Proyecto - MediConnect
 
-Este documento contiene el resumen técnico completo del proyecto "MediConnect", incluyendo la estructura de archivos de los proyectos Backend y Android, configuraciones de red, base de datos, credenciales y el catálogo de servicios REST.
-
----
-
-## 🛠️ 1. Stack Tecnológico
-
-### Backend & Base de Datos
-| Componente | Tecnología / Versión | Propósito |
-| :--- | :--- | :--- |
-| **Lenguaje** | Java 17 | Lenguaje de programación del servidor |
-| **Framework** | Spring Boot 3.3.6 | Desarrollo de la API RESTful y seguridad |
-| **Persistencia** | Spring Data JPA / Hibernate | Mapeo objeto-relacional (ORM) |
-| **Seguridad** | Spring Security / JWT (HS256) | Autenticación y control de accesos |
-| **Base de Datos** | PostgreSQL 16 (Alpine) | Motor de base de datos relacional |
-| **Documentación** | Swagger UI / OpenAPI 3.0 | Pruebas de API y documentación de endpoints |
-
-### Aplicación Móvil Android
-| Componente | Tecnología / Versión | Propósito |
-| :--- | :--- | :--- |
-| **Lenguaje** | Kotlin | Desarrollo nativo Android |
-| **Arquitectura** | MVVM (Model-View-ViewModel) | Separación de lógica de negocio y presentación |
-| **Inyección de DI** | Dagger Hilt (2.50) | Gestión del ciclo de vida de dependencias |
-| **Cliente HTTP** | Retrofit 2 / OkHttp 4 | Consumo y parsing de servicios web |
-| **Caché Local** | Room Database | Base de datos local SQLite para soporte offline |
-| **Seguridad** | EncryptedSharedPreferences / Biometrics | Cifrado de credenciales y login por huella |
-| **Generador QR** | ZXing Core | Generación de códigos QR de check-in |
-| **Multimedia** | Coil | Carga asíncrona de imágenes de perfil |
+Apuntes sobre la arquitectura, configuracion y estructura de archivos de la API y la aplicacion Android para la entrega de Tecnologias Moviles.
 
 ---
 
-## 🌐 2. Parámetros de Red, Infraestructura y Despliegue
+## 1. Tecnologias y stack de desarrollo
 
-El sistema está desplegado en el clúster remoto **epis-k3s** dentro del namespace universitario asignado.
+### API y base de datos (Backend)
+*   **Servidor**: Java 17 con Spring Boot 3.3.6.
+*   **Base de datos**: PostgreSQL 16 corriendo sobre una imagen Alpine.
+*   **ORM / Acceso a datos**: Spring Data JPA con Hibernate.
+*   **Seguridad**: Spring Security usando tokens JWT (firmados con algoritmo HS256) y contraseñas hasheadas en BD mediante BCrypt.
+*   **Documentacion**: Swagger UI expuesto con OpenAPI 3.0 para pruebas de endpoints.
+*   **Infraestructura**: Dockerfile para empaquetado y manifiestos de Kubernetes (K3s). La persistencia de la base de datos se maneja con un volumen persistente (PVC) de 5 GB.
 
-*   **Namespace de Kubernetes**: `2023800251`
-*   **Servidor Control Plane (Clúster)**: `172.16.10.31:6443` (Acceso vía túnel VPN WireGuard)
-*   **Puntos de Entrada del Backend (Externos)**:
-    *   **URL Base API (Móvil)**: `http://172.16.10.31:30251/api/`
-    *   **Puerto de Exposición (NodePort)**: `30251`
-    *   **Swagger UI**: `http://172.16.10.31:30251/swagger-ui/index.html`
-*   **Conexiones de Red Internas (Overlay K8s)**:
-    *   **IP directa del Pod de PostgreSQL**: `10.42.0.44:5432` (Usado en el ConfigMap de la API para garantizar el enrutamiento directo en el clúster)
-    *   **ClusterIP del Servicio Postgres**: `10.43.149.205`
-*   **Parámetros de Base de Datos**:
-    *   **Base de datos**: `mediconnect`
-    *   **Usuario**: `mediconnect`
-    *   **Contraseña**: `mediconnect123`
+### Aplicacion Android (Cliente)
+*   **Lenguaje**: Kotlin nativo (compatible desde SDK 24 hasta SDK 34).
+*   **Diseño de arquitectura**: Patron MVVM (Model-View-ViewModel) con arquitectura limpia.
+*   **Inyeccion de dependencias**: Dagger Hilt (version 2.50).
+*   **Llamadas de red**: Retrofit 2 con OkHttp 4 (incluye interceptor para adjuntar el JWT y redirigir al Login si expira la sesion).
+*   **Base de datos local (Offline cache)**: Room para almacenar doctores y citas cuando no hay conexion.
+*   **Seguridad local**: EncryptedSharedPreferences para guardar el token de forma segura e integracion con la huella digital (BiometricPrompt).
+*   **Generador QR**: Libreria ZXing para renderizar el codigo de check-in de las citas.
+*   **Imagenes**: Coil para cargar las fotos de perfil de los usuarios.
 
 ---
 
-## 📂 3. Estructura General del Proyecto (Árbol de Archivos)
+## 2. Configuracion de red y despliegue (Kubernetes)
 
-El repositorio local está ubicado en `/home/m4fb/Documents/ProjFinalTM` y se organiza de la siguiente manera:
+El proyecto esta desplegado en el cluster K3s de la universidad y se conecta mediante WireGuard.
+
+*   **Namespace asignado**: "2023800251"
+*   **Servidor del cluster (Control Plane)**: 172.16.10.31:6443 (requiere conexion WireGuard activa).
+*   **Acceso externo al API**:
+    *   **URL base para Retrofit**: http://172.16.10.31:30251/api/
+    *   **Puerto externo (NodePort)**: 30251
+    *   **Swagger interactivo**: http://172.16.10.31:30251/swagger-ui/index.html
+*   **Enrutamiento interno en K8s**:
+    *   **IP directa del Pod de Postgres**: 10.42.0.44:5432 (se usa esta IP en el ConfigMap de la API para evitar problemas con el DNS del cluster).
+    *   **ClusterIP de Postgres**: 10.43.149.205
+*   **Datos de conexion a la base de datos**:
+    *   **Base de datos**: mediconnect
+    *   **Usuario**: mediconnect
+    *   **Contraseña**: mediconnect123
+
+---
+
+## 3. Estructura de archivos de los proyectos
+
+Ubicacion de las carpetas principales dentro de /home/m4fb/Documents/ProjFinalTM:
 
 ```text
 ProjFinalTM/
-├── .gitignore                          # Exclusiones de Git para Maven y Android
-├── guia_diseno_y_credenciales.txt      # Guía rápida para edición visual
-├── resumen_proyecto_completo.md        # Esta documentación general
+├── .gitignore                          # Descarta archivos de compilacion de Maven y Android
+├── guia_diseno_y_credenciales.txt      # Archivo guia para modificar el diseño visual
+├── resumen_proyecto_completo.md        # Este archivo de apuntes
 │
-├── mediconnect-api/                    # --- SUBPROYECTO BACKEND (SPRING BOOT) ---
-│   ├── Dockerfile                      # Compilación multi-stage y empaquetado Docker
-│   ├── pom.xml                         # Dependencias Maven (Spring Boot, Security, JWT, Postgres)
-│   ├── k8s/                            # Manifiestos de Despliegue en Kubernetes
-│   │   ├── postgres-pvc.yaml           # Almacenamiento persistente de 5GB para Postgres
-│   │   ├── postgres-configmap.yaml     # Variables de base de datos (DB, USER, PASSWORD)
-│   │   ├── postgres-deployment.yaml    # Configuración de réplica única y probes de Postgres
-│   │   ├── postgres-service.yaml       # Exposición interna (ClusterIP: 5432)
-│   │   ├── api-configmap.yaml          # Ajustes del API (Puerto 8080, DB_URL, JWT secret)
-│   │   ├── api-deployment.yaml         # Despliegue de la API, probes de salud y límites de memoria
-│   │   ├── api-service.yaml            # Exposición externa (NodePort: 30251)
-│   │   └── deploy.sh                   # Script automático de despliegue ordenado
+├── mediconnect-api/                    # --- BACKEND (SPRING BOOT) ---
+│   ├── Dockerfile                      # Archivo de construccion de imagen
+│   ├── pom.xml                         # Administrador de dependencias Maven
+│   ├── k8s/                            # Manifiestos de despliegue en Kubernetes
+│   │   ├── postgres-pvc.yaml           # Reserva de 5GB de disco para la BD
+│   │   ├── postgres-configmap.yaml     # Datos de conexion de Postgres
+│   │   ├── postgres-deployment.yaml    # Levanta el pod de la BD
+│   │   ├── postgres-service.yaml       # Expone Postgres dentro del cluster
+│   │   ├── api-configmap.yaml          # Configuracion de conexion del backend
+│   │   ├── api-deployment.yaml         # Levanta la aplicacion Spring y define limites de RAM
+│   │   ├── api-service.yaml            # Expone la API al exterior en el puerto 30251
+│   │   └── deploy.sh                   # Script para desplegar todo en orden
 │   └── src/main/
 │       ├── java/com/mediconnect/api/
-│       │   ├── controller/             # Controladores REST (Auth, User, Doctor, Cita, Receta, Historial)
-│       │   ├── dto/                    # Clases DTO de transferencia agrupados por entidad
-│       │   ├── entity/                 # Entidades JPA (User, Doctor, Paciente, Cita, Receta, Historial, etc.)
-│       │   ├── repository/             # Interfaces de Spring Data JPA para PostgreSQL
-│       │   ├── security/               # Configuración WebSecurity, filtros y proveedor de tokens JWT
-│       │   └── service/                # Capa lógica de negocio del sistema
+│       │   ├── controller/             # Puntos de entrada REST (Auth, Citas, Doctores, etc.)
+│       │   ├── dto/                    # Objetos para transferencia de datos en JSON
+│       │   ├── entity/                 # Tablas mapeadas con JPA
+│       │   ├── repository/             # Consultas a la base de datos PostgreSQL
+│       │   ├── security/               # Filtros JWT y configuracion de acceso web
+│       │   └── service/                # Implementacion de la logica del sistema
 │       └── resources/
-│           └── application-prod.yml    # Propiedades de producción y Dialectos JPA
+│           └── application-prod.yml    # Propiedades del entorno de ejecucion
 │
-└── mediconnect-android/                # --- SUBPROYECTO CLIENTE (ANDROID NATIVO) ---
-    ├── build.gradle.kts                # Configuración de compilación raíz
-    ├── settings.gradle.kts             # Nombre del proyecto e inclusión de módulos
-    ├── local.properties                # Ruta local del Android SDK (/home/m4fb/Android/Sdk)
-    ├── gradle.properties               # Ajustes JVM y ruta del JDK 17 portable de respaldo
+└── mediconnect-android/                # --- APP ANDROID (KOTLIN) ---
+    ├── build.gradle.kts                # Gradle raiz del proyecto
+    ├── settings.gradle.kts             # Nombre del proyecto y modulos incluidos
+    ├── local.properties                # Ruta del SDK de Android del sistema
+    ├── gradle.properties               # Configuracion del daemon de gradle y JDK de respaldo
     └── app/
-        ├── build.gradle.kts            # Plugins (Kapt, Ksp, Hilt) y dependencias de UI y datos
+        ├── build.gradle.kts            # Dependencias del modulo movil (Room, Hilt, Retrofit)
         └── src/main/
-            ├── AndroidManifest.xml     # Permisos (INTERNET, BIOMETRICS, CAMERA) y lanzador principal
+            ├── AndroidManifest.xml     # Permisos del sistema y actividades
             ├── java/com/mediconnect/app/
-            │   ├── MediConnectApp.kt   # Clase de aplicación inicializadora de Hilt
-            │   ├── MainActivity.kt     # Actividad contenedora única
+            │   ├── MediConnectApp.kt   # Inicializador de Dagger Hilt
+            │   ├── MainActivity.kt     # Actividad base con NavHost
             │   ├── di/
-            │   │   └── AppModule.kt    # Módulo de provisión Hilt (Retrofit, Room, SharedPreferences)
+            │   │   └── AppModule.kt    # Proveedor de Singletons (BD, API, SharedPrefs)
             │   ├── data/
-            │   │   ├── local/          # Base de datos Room (AppDatabase, Cache entities, DAOs)
-            │   │   ├── remote/         # Capa de red (MediConnectApi, Dtos y AuthInterceptor)
-            │   │   └── repository/     # Repositorio mediador con caché offline (patrón Repository)
-            │   ├── ui/                 # Componentes gráficos de la app (ViewModels y Fragments)
-            │   │   ├── auth/           # Login (con Huella digital) y Registro
-            │   │   ├── dashboard/      # Panel de accesos con banner de estado Offline
-            │   │   ├── doctors/        # Directorio de búsqueda y agendamiento
-            │   │   ├── appointments/   # Mis Citas, cancelaciones y generador QR para Check-in
-            │   │   ├── prescriptions/  # Recetas y medicamento detallado
-            │   │   ├── history/        # Historial clínico e ingresos
-            │   │   ├── notifications/  # Alertas internas del usuario
-            │   │   └── profile/        # Edición de perfil y configuraciones de seguridad
+            │   │   ├── local/          # Base de datos Room (Entidades de cache y DAOs)
+            │   │   ├── remote/         # Interfaz Retrofit, DTOs y interceptor JWT
+            │   │   └── repository/     # Logica del repositorio con soporte offline
+            │   ├── ui/                 # Pantallas de la app (ViewModels y Fragments)
+            │   │   ├── auth/           # Login y registro de usuarios
+            │   │   ├── dashboard/      # Menu con botones y banner de red
+            │   │   ├── doctors/        # Busqueda de doctores y reserva de citas
+            │   │   ├── appointments/   # Mis citas, cancelaciones e ingreso por QR
+            │   │   ├── prescriptions/  # Recetas medicas asignadas
+            │   │   ├── history/        # Historial clinico y registros
+            │   │   ├── notifications/  # Notificaciones locales
+            │   │   └── profile/        # Edicion de datos del perfil
             │   └── util/
-            │       └── Constants.kt    # Constantes globales (BASE_URL, PREFS, KEYS)
+            │       └── Constants.kt    # Constantes (BASE_URL, SharedPrefs keys)
             └── res/
-                ├── layout/             # Diseños de pantalla XML (basados en LinearLayout)
+                ├── layout/             # Archivos XML de la interfaz visual
                 ├── navigation/
-                │   └── nav_graph.xml   # Gráfico de flujo y transiciones de pantalla
+                │   └── nav_graph.xml   # Flujo de pantallas
                 └── values/
-                    ├── colors.xml      # Paleta de colores hexadecimales del aplicativo
-                    ├── strings.xml     # Textos y etiquetas en español
-                    └── themes.xml      # Tema visual primario de la app
+                    ├── colors.xml      # Colores del tema de la app
+                    ├── strings.xml     # Textos en español
+                    └── themes.xml      # Estilo general de los componentes
 ```
 
 ---
 
-## 📞 4. Catálogo de Endpoints de la API REST
+## 4. Lista de endpoints del API REST
 
-Todos los endpoints (excepto `/auth/*` de inicio) requieren la cabecera `Authorization: Bearer <token>`.
+Los endpoints (excepto login y registro) requieren mandar el token en la cabecera `Authorization: Bearer <token>`.
 
-| Módulo | Método HTTP | Ruta del Endpoint | Descripción |
+| Modulo | Metodo | Ruta | Descripcion |
 | :--- | :--- | :--- | :--- |
-| **Autenticación** | `POST` | `/api/auth/login` | Login del usuario. Retorna JWT access + refresh tokens. |
-| | `POST` | `/api/auth/register` | Registro de nuevos usuarios (rol Paciente por defecto). |
-| | `POST` | `/api/auth/refresh` | Renovación del token de acceso expirado. |
-| **Usuarios** | `GET` | `/api/users/me` | Obtiene el perfil del usuario autenticado. |
-| | `PUT` | `/api/users/me` | Actualiza la información del perfil del usuario. |
-| | `PUT` | `/api/users/me/password` | Cambia la contraseña del usuario (valida contraseña anterior). |
-| **Doctores** | `GET` | `/api/doctors` | Lista doctores con filtros opcionales de búsqueda y especialidad. |
-| | `GET` | `/api/doctors/{id}` | Obtiene el perfil detallado de un doctor. |
-| | `GET` | `/api/doctors/{id}/horarios-disponibles` | Lista horarios disponibles del doctor para una fecha (`?fecha=`). |
-| | `GET` | `/api/doctors/{id}/valoraciones` | Obtiene las reseñas e historial de calificaciones del doctor. |
-| | `POST` | `/api/doctors/{id}/valoraciones` | Añade una valoración (1 a 5 estrellas) de un paciente al doctor. |
-| **Citas** | `GET` | `/api/citas` | Lista las citas del usuario (filtrables por estado `?estado=`). |
-| | `POST` | `/api/citas` | Reserva una nueva cita con un doctor para una fecha y hora. |
-| | `PUT` | `/api/citas/{id}/cancelar` | Cancela una cita (requiere motivo de cancelación). |
-| | `POST` | `/api/citas/{id}/check-in` | Realiza el ingreso a la cita médica utilizando su código QR. |
-| **Recetas** | `GET` | `/api/recetas/mis-recetas` | Obtiene el listado de recetas emitidas para el paciente autenticado. |
-| | `POST` | `/api/recetas` | Crea una receta con detalles de medicamentos (Solo Doctor). |
-| **Historial** | `GET` | `/api/historial` | Obtiene el historial clínico acumulado del paciente. |
-| | `POST` | `/api/historial` | Añade un registro o antecedente al historial médico. |
-| **Notificaciones** | `GET` | `/api/notificaciones` | Lista todas las notificaciones del usuario. |
-| | `PUT` | `/api/notificaciones/{id}/leer` | Marca una notificación como leída. |
-| **Admin** | `POST` | `/api/admin/doctores` | Registra a un nuevo usuario con rol DOCTOR (Solo Admin). |
+| **Auth** | `POST` | `/api/auth/login` | Login. Devuelve los tokens access y refresh. |
+| | `POST` | `/api/auth/register` | Registro de pacientes nuevos. |
+| | `POST` | `/api/auth/refresh` | Refresca el token cuando expira. |
+| **Usuarios** | `GET` | `/api/users/me` | Retorna los datos del perfil actual. |
+| | `PUT` | `/api/users/me` | Actualiza campos del perfil. |
+| | `PUT` | `/api/users/me/password` | Cambia la contraseña (valida contraseña anterior). |
+| **Doctores** | `GET` | `/api/doctors` | Lista doctores. Admite filtros de especialidad o busqueda por nombre. |
+| | `GET` | `/api/doctors/{id}` | Retorna el detalle de un doctor en especifico. |
+| | `GET` | `/api/doctors/{id}/horarios-disponibles` | Retorna horas disponibles para una fecha dada (?fecha=). |
+| | `GET` | `/api/doctors/{id}/valoraciones` | Lista comentarios y estrellas del doctor. |
+| | `POST` | `/api/doctors/{id}/valoraciones` | Agrega comentario y calificacion (1-5 estrellas) al doctor. |
+| **Citas** | `GET` | `/api/citas` | Lista citas del usuario. Admite filtro de estado (?estado=). |
+| | `POST` | `/api/citas` | Crea o reserva una cita con un doctor. |
+| | `PUT` | `/api/citas/{id}/cancelar` | Cancela una cita pasandole un motivo. |
+| | `POST` | `/api/citas/{id}/check-in` | Registra asistencia de la cita mandando el codigo QR. |
+| **Recetas** | `GET` | `/api/recetas/mis-recetas` | Lista recetas medicas del paciente. |
+| | `POST` | `/api/recetas` | Genera una receta de medicamentos (Uso del Doctor). |
+| **Historial** | `GET` | `/api/historial` | Obtiene el historial medico del paciente. |
+| | `POST` | `/api/historial` | Agrega una entrada nueva al historial. |
+| **Alertas** | `GET` | `/api/notificaciones` | Retorna notificaciones del usuario. |
+| | `PUT` | `/api/notificaciones/{id}/leer` | Marca una notificacion como leida. |
+| **Admin** | `POST` | `/api/admin/doctores` | Registra a un nuevo doctor en el sistema (Uso exclusivo de ADMIN). |
 
 ---
 
-## 🔑 5. Credenciales de Prueba Precargadas
+## 5. Datos y usuarios de prueba
 
-| Rol | Email / Usuario | Contraseña | Detalles del Perfil |
-| :--- | :--- | :--- | :--- |
-| **ADMIN** | `admin@mediconnect.com` | `admin123` | Acceso total al registro de doctores |
-| **DOCTOR** | `dr.martinez@mediconnect.com` | `password123` | Carlos Martínez (Cardiología) |
-| **DOCTOR** | `dra.garcia@mediconnect.com` | `password123` | Ana García (Dermatología) |
-| **DOCTOR** | `dr.rodriguez@mediconnect.com` | `password123` | Miguel Rodríguez (Pediatría) |
-| **PACIENTE** | `paciente1@email.com` | `password123` | Juan Pérez (Historial clínico y citas cargadas) |
-| **PACIENTE** | `paciente2@email.com` | `password123` | María López (Historial clínico y citas cargadas) |
-| **PACIENTE** | `paciente3@email.com` | `password123` | Roberto Sánchez |
-| **PACIENTE** | `paciente4@email.com` | `password123` | Laura Fernández |
-| **PACIENTE** | `paciente5@email.com` | `password123` | Diego Morales |
+Cuentas precargadas por CommandLineRunner en la base de datos para probar flujos:
+
+*   **Administrador**:
+    *   Correo: `admin@mediconnect.com`
+    *   Contraseña: `admin123`
+*   **Doctores (Contraseña general: `password123`)**:
+    *   Cardiologia: `dr.martinez@mediconnect.com`
+    *   Dermatologia: `dra.garcia@mediconnect.com`
+    *   Pediatria: `dr.rodriguez@mediconnect.com`
+*   **Pacientes (Contraseña general: `password123`)**:
+    *   Paciente 1: `paciente1@email.com` (tiene historial y citas previas)
+    *   Paciente 2: `paciente2@email.com`
+    *   Paciente 3: `paciente3@email.com`
+    *   Paciente 4: `paciente4@email.com`
+    *   Paciente 5: `paciente5@email.com`
