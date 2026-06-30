@@ -52,6 +52,8 @@ interface MediConnectRepository {
         diasAtencion: String?
     ): ApiResponse<DoctorDto>
     suspend fun getHorarios(doctorId: String, fecha: String): ApiResponse<List<HorarioDisponibleDto>>
+    suspend fun getAllUsers(): ApiResponse<List<UserDto>>
+    suspend fun toggleUserActive(userId: String): ApiResponse<UserDto>
 
     // Appointments / Citas (Cache supported)
     fun getCitasFlow(): Flow<List<CitaDto>>

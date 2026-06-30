@@ -40,6 +40,7 @@ class AppointmentsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
+        viewModel.refreshAppointments()
 
         binding.btnCreateAppointment.setOnClickListener {
             findNavController().navigate(R.id.action_appointmentsFragment_to_appointmentCreateFragment)
@@ -62,6 +63,31 @@ class AppointmentsFragment : Fragment() {
                 if (error != null) {
                     Toast.makeText(context, error, Toast.LENGTH_LONG).show()
                     viewModel.clearError()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.userProfile.collectLatest { profile ->
+                if (profile != null) {
+                    when (profile.role) {
+                        "PACIENTE" -> {
+                            binding.btnCreateAppointment.visibility = View.VISIBLE
+                            binding.tvAppointmentsTitle.text = "MIS CITAS MÉDICAS"
+                        }
+                        "DOCTOR" -> {
+                            binding.btnCreateAppointment.visibility = View.GONE
+                            binding.tvAppointmentsTitle.text = "CITAS DE PACIENTES"
+                        }
+                        "ADMIN" -> {
+                            binding.btnCreateAppointment.visibility = View.GONE
+                            binding.tvAppointmentsTitle.text = "TODAS LAS CITAS (ADMIN)"
+                        }
+                        else -> {
+                            binding.btnCreateAppointment.visibility = View.GONE
+                            binding.tvAppointmentsTitle.text = "CITAS MÉDICAS"
+                        }
+                    }
                 }
             }
         }

@@ -48,6 +48,18 @@ class RegisterFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                binding.tvError.text = "Formato de correo electrónico inválido"
+                binding.tvError.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
+            if (password.length < 6) {
+                binding.tvError.text = "La contraseña debe tener al menos 6 caracteres"
+                binding.tvError.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+
             viewModel.register(nombre, apellido, email, password, telefono, direccion)
         }
 

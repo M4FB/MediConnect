@@ -46,6 +46,33 @@ class AppointmentCreateFragment : Fragment() {
             }
         }
 
+        binding.etApptDate.isFocusable = false
+        binding.etApptDate.setOnClickListener {
+            val calendar = java.util.Calendar.getInstance()
+            val year = calendar.get(java.util.Calendar.YEAR)
+            val month = calendar.get(java.util.Calendar.MONTH)
+            val day = calendar.get(java.util.Calendar.DAY_OF_MONTH)
+
+            android.app.DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+                val formattedMonth = String.format("%02d", selectedMonth + 1)
+                val formattedDay = String.format("%02d", selectedDay)
+                binding.etApptDate.setText("$selectedYear-$formattedMonth-$formattedDay")
+            }, year, month, day).show()
+        }
+
+        binding.etApptTime.isFocusable = false
+        binding.etApptTime.setOnClickListener {
+            val calendar = java.util.Calendar.getInstance()
+            val hour = calendar.get(java.util.Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(java.util.Calendar.MINUTE)
+
+            android.app.TimePickerDialog(requireContext(), { _, selectedHour, selectedMinute ->
+                val formattedHour = String.format("%02d", selectedHour)
+                val formattedMinute = String.format("%02d", selectedMinute)
+                binding.etApptTime.setText("$formattedHour:$formattedMinute")
+            }, hour, minute, true).show()
+        }
+
         binding.btnSubmitAppt.setOnClickListener {
             val selectedPos = binding.spinnerDoctor.selectedItemPosition
             if (selectedPos < 0 || selectedPos >= doctorList.size) {

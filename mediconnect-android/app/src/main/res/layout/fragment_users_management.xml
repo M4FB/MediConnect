@@ -6,19 +6,11 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/tvAppointmentsTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="MIS CITAS MÉDICAS"
+        android:text="GESTIÓN DE USUARIOS (ADMIN)"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginBottom="10dp" />
-
-    <Button
-        android:id="@+id/btnCreateAppointment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Agendar Nueva Cita"
         android:layout_marginBottom="10dp" />
 
     <ProgressBar
@@ -29,9 +21,8 @@
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvAppointments"
+        android:id="@+id/rvUsers"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

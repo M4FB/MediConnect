@@ -135,7 +135,7 @@ data class CitaDto(
 )
 
 data class CancelarCitaRequest(
-    val motivo: String
+    val motivoCancelacion: String
 )
 
 data class CheckInRequest(

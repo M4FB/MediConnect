@@ -24,8 +24,25 @@ class MediConnectRepositoryImpl @Inject constructor(
     private suspend fun <T> safeApiCall(call: suspend () -> ApiResponse<T>): ApiResponse<T> {
         return try {
             call()
+        } catch (e: retrofit2.HttpException) {
+            try {
+                val errorBodyString = e.response()?.errorBody()?.string()
+                if (!errorBodyString.isNullOrEmpty()) {
+                    val gson = com.google.gson.Gson()
+                    val errorResponse = gson.fromJson(errorBodyString, ApiResponse::class.java)
+                    ApiResponse(
+                        success = false,
+                        message = errorResponse.message ?: "Error del servidor (${e.code()})",
+                        data = null
+                    )
+                } else {
+                    ApiResponse(success = false, message = "Error del servidor (${e.code()})", data = null)
+                }
+            } catch (jsonEx: Exception) {
+                ApiResponse(success = false, message = "Error del servidor: ${e.message()}", data = null)
+            }
         } catch (e: Exception) {
-            ApiResponse(success = false, message = e.localizedMessage ?: "Network error occurred", data = null)
+            ApiResponse(success = false, message = e.localizedMessage ?: "Ocurrió un error de red", data = null)
         }
     }
 
@@ -337,5 +354,13 @@ class MediConnectRepositoryImpl @Inject constructor(
 
     override suspend fun getValoraciones(doctorId: String): ApiResponse<List<ValoracionDto>> {
         return safeApiCall { api.getValoraciones(doctorId) }
+    }
+
+    override suspend fun getAllUsers(): ApiResponse<List<UserDto>> {
+        return safeApiCall { api.getAllUsers() }
+    }
+
+    override suspend fun toggleUserActive(userId: String): ApiResponse<UserDto> {
+        return safeApiCall { api.toggleUserActive(userId) }
     }
 }

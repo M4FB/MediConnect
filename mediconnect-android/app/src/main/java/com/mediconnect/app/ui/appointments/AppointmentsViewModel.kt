@@ -3,6 +3,7 @@ package com.mediconnect.app.ui.appointments
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mediconnect.app.data.remote.dto.CitaDto
+import com.mediconnect.app.data.remote.dto.UserDto
 import com.mediconnect.app.data.repository.MediConnectRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,8 +32,21 @@ class AppointmentsViewModel @Inject constructor(
     private val _checkInSuccess = MutableStateFlow<CitaDto?>(null)
     val checkInSuccess: StateFlow<CitaDto?> = _checkInSuccess.asStateFlow()
 
+    private val _userProfile = MutableStateFlow<UserDto?>(null)
+    val userProfile: StateFlow<UserDto?> = _userProfile.asStateFlow()
+
     init {
         refreshAppointments()
+        loadUserProfile()
+    }
+
+    fun loadUserProfile() {
+        viewModelScope.launch {
+            val response = repository.getProfile()
+            if (response.success && response.data != null) {
+                _userProfile.value = response.data
+            }
+        }
     }
 
     fun refreshAppointments() {
@@ -41,6 +55,10 @@ class AppointmentsViewModel @Inject constructor(
             val response = repository.fetchCitas()
             if (!response.success) {
                 _error.value = response.message
+            }
+            val docResponse = repository.fetchDoctors()
+            if (!docResponse.success && _error.value == null) {
+                _error.value = docResponse.message
             }
             _isLoading.value = false
         }

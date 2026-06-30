@@ -45,6 +45,12 @@ interface MediConnectApi {
     @POST("admin/doctores")
     suspend fun registerDoctor(@Body request: DoctorRegistrationRequest): ApiResponse<DoctorDto>
 
+    @GET("admin/users")
+    suspend fun getAllUsers(): ApiResponse<List<UserDto>>
+
+    @PUT("admin/users/{id}/toggle-active")
+    suspend fun toggleUserActive(@Path("id") id: String): ApiResponse<UserDto>
+
     // Appointments (Citas) (Mapped to /api/citas)
     @GET("citas")
     suspend fun getCitas(@Query("estado") estado: String? = null): ApiResponse<List<CitaDto>>

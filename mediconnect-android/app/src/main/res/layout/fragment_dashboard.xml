@@ -92,7 +92,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Mi Perfil y Seguridad"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="5dp" />
+
+            <Button
+                android:id="@+id/btnManageUsers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Gestión de Usuarios (Admin)"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btnLogout"

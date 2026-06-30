@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -63,6 +66,19 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
+    }
+
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public UserDto toggleUserActive(UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+        user.setActivo(!user.isActivo());
+        user.setUpdatedAt(LocalDateTime.now());
+        return mapToDto(userRepository.save(user));
     }
 
     private UserDto mapToDto(User user) {

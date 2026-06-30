@@ -62,6 +62,9 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_usersManagementFragment"
+            app:destination="@id/usersManagementFragment" />
     </fragment>
 
     <!-- Doctors Screens -->
@@ -82,7 +85,7 @@
         tools:layout="@layout/fragment_doctor_detail">
         <argument
             android:name="doctorId"
-            app:argType="long" />
+            app:argType="string" />
         <argument
             android:name="doctorNombre"
             app:argType="string" />
@@ -118,7 +121,7 @@
         tools:layout="@layout/fragment_appointment_check_in">
         <argument
             android:name="citaId"
-            app:argType="long" />
+            app:argType="string" />
         <argument
             android:name="codigoCheckIn"
             app:argType="string" />
@@ -142,7 +145,7 @@
         tools:layout="@layout/fragment_prescription_detail">
         <argument
             android:name="recetaId"
-            app:argType="long" />
+            app:argType="string" />
     </fragment>
 
     <!-- Medical History Screens -->
@@ -175,5 +178,12 @@
         android:name="com.mediconnect.app.ui.profile.ProfileFragment"
         android:label="Mi Perfil"
         tools:layout="@layout/fragment_profile" />
+
+    <!-- Users Management Screen (Admin) -->
+    <fragment
+        android:id="@+id/usersManagementFragment"
+        android:name="com.mediconnect.app.ui.admin.UsersManagementFragment"
+        android:label="Gestión de Usuarios"
+        tools:layout="@layout/fragment_users_management" />
 
 </navigation>

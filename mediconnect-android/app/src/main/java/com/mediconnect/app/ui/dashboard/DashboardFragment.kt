@@ -62,6 +62,10 @@ class DashboardFragment : Fragment() {
             findNavController().navigate(R.id.action_dashboardFragment_to_profileFragment)
         }
 
+        binding.btnManageUsers.setOnClickListener {
+            findNavController().navigate(R.id.action_dashboardFragment_to_usersManagementFragment)
+        }
+
         binding.btnLogout.setOnClickListener {
             viewModel.logout()
             Toast.makeText(context, "Sesión cerrada", Toast.LENGTH_SHORT).show()
@@ -73,6 +77,33 @@ class DashboardFragment : Fragment() {
                 if (profile != null) {
                     binding.tvWelcome.text = "¡Hola, ${profile.nombre} ${profile.apellido}!"
                     binding.tvStatus.text = "Rol: ${profile.role} | Email: ${profile.email}"
+                    
+                    when (profile.role) {
+                        "PACIENTE" -> {
+                            binding.btnPrescriptions.visibility = View.VISIBLE
+                            binding.btnHistory.visibility = View.VISIBLE
+                            binding.btnAppointments.text = "Gestionar Mis Citas"
+                            binding.btnManageUsers.visibility = View.GONE
+                        }
+                        "DOCTOR" -> {
+                            binding.btnPrescriptions.visibility = View.GONE
+                            binding.btnHistory.visibility = View.GONE
+                            binding.btnAppointments.text = "Citas de Pacientes"
+                            binding.btnManageUsers.visibility = View.GONE
+                        }
+                        "ADMIN" -> {
+                            binding.btnPrescriptions.visibility = View.GONE
+                            binding.btnHistory.visibility = View.GONE
+                            binding.btnAppointments.text = "Gestionar Todas las Citas"
+                            binding.btnManageUsers.visibility = View.VISIBLE
+                        }
+                        else -> {
+                            binding.btnPrescriptions.visibility = View.GONE
+                            binding.btnHistory.visibility = View.GONE
+                            binding.btnAppointments.text = "Gestionar Mis Citas"
+                            binding.btnManageUsers.visibility = View.GONE
+                        }
+                    }
                 }
             }
         }
