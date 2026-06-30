@@ -31,3 +31,14 @@ mediconnect-android/app/build/
 *.dex
 *.class
 
+# Custom project files to ignore
+*.tex
+*.aux
+*.log
+*.toc
+*.out
+*.pdf
+guia_diseno_y_credenciales.txt
+resumen_proyecto_completo.md
+todo.md
+
